@@ -66,11 +66,15 @@ Question:
 
         answer = response.text
 
-        unique_sources = list(
-            set(
-                sources
-            )
-        )
+        unique_sources = []
+
+        for source in sources:
+
+            if source not in unique_sources:
+
+             unique_sources.append(
+               source
+             )
 
         return {
 

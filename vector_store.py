@@ -28,7 +28,13 @@ def store_chunks(
 
     collection.add(
 
-        documents=chunks,
+        documents=[
+
+            chunk["text"]
+
+            for chunk in chunks
+
+        ],
 
         embeddings=embeddings.tolist(),
 
@@ -36,13 +42,15 @@ def store_chunks(
 
         metadatas=[
 
-            {
+        {
 
-                "source": source
+            "source": source,
 
-            }
+            "page": chunk["page"]
 
-            for _ in chunks
+        }
+
+        for chunk in chunks
 
         ]
 
@@ -74,12 +82,22 @@ def retrieve_chunks(question_embedding):
 
     sources = [
 
-        metadata["source"]
+    {
 
-        for metadata in
+        "pdf":
 
-        results["metadatas"][0]
+        metadata["source"],
 
-    ]
+        "page":
+
+        metadata["page"]
+
+    }
+
+    for metadata in
+
+    results["metadatas"][0]
+
+]
 
     return documents, sources

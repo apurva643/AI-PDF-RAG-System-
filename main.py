@@ -27,20 +27,29 @@ async def upload_pdf(
         contents
     )
 
-    if text.strip() == "":
+    if len(text) == 0:
 
         return {
-            "message":
-            "No text found in PDF"
-        }
 
+          "message":
+          "No text found in PDF"
+
+        }
     chunks = chunk_text(
         text
     )
 
     embeddings = get_embeddings(
-        chunks
-    )
+
+    [
+
+        chunk["text"]
+
+        for chunk in chunks
+
+    ]
+
+)
 
     store_chunks(
     chunks,

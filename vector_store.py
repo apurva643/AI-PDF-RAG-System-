@@ -10,33 +10,76 @@ collection = client.get_or_create_collection(
 )
 
 
-def store_chunks(chunks, embeddings):
+def store_chunks(
+    chunks,
+    embeddings,
+    source
+):
 
-    ids = []
+    ids = [
 
-    for i in range(len(chunks)):
+        source + "_" + str(i)
 
-        ids.append(str(i))
+        for i in range(
+            len(chunks)
+        )
 
+    ]
 
     collection.add(
+
         documents=chunks,
+
         embeddings=embeddings.tolist(),
-        ids=ids
+
+        ids=ids,
+
+        metadatas=[
+
+            {
+
+                "source": source
+
+            }
+
+            for _ in chunks
+
+        ]
+
     )
 
 
 def retrieve_chunks(question_embedding):
 
     results = collection.query(
+
         query_embeddings=[
             question_embedding.tolist()
         ],
-        n_results=3
+
+        n_results=10,
+
+        include=[
+            "documents",
+            "metadatas"
+        ]
+
     )
 
     if len(results["documents"][0]) == 0:
 
-        return []
+        return [], []
 
-    return results["documents"][0]
+    documents = results["documents"][0]
+
+    sources = [
+
+        metadata["source"]
+
+        for metadata in
+
+        results["metadatas"][0]
+
+    ]
+
+    return documents, sources

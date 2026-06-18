@@ -17,8 +17,8 @@ def ask_question(question):
         [question]
     )[0]
 
-    # Retrieve top chunks
-    retrieved_chunks = retrieve_chunks(
+    # Retrieve top chunks and sources
+    retrieved_chunks, sources = retrieve_chunks(
         question_embedding
     )
 
@@ -64,11 +64,24 @@ Question:
             contents=prompt
         )
 
-        return response.text
+        answer = response.text
 
-    except Exception:
-
-        return (
-            "An error occurred while "
-            "generating the answer."
+        unique_sources = list(
+            set(
+                sources
+            )
         )
+
+        return {
+
+            "answer": answer,
+
+            "sources": unique_sources
+
+        }
+
+    except Exception as e:
+
+        print(e)
+
+        return str(e)

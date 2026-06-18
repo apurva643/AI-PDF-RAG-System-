@@ -43,8 +43,9 @@ async def upload_pdf(
     )
 
     store_chunks(
-        chunks,
-        embeddings
+    chunks,
+    embeddings,
+    file.filename
     )
 
     return {
@@ -62,7 +63,5 @@ def ask(
         data.question
     )
 
-    return {
-        "answer":
-        response
-    }
+    return response
+    

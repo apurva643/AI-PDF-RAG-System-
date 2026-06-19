@@ -56,7 +56,6 @@ Question:
 {question}
 """
 
-    # Gemini call
     try:
 
         response = client.models.generate_content(
@@ -66,21 +65,49 @@ Question:
 
         answer = response.text
 
-        unique_sources = []
+        # Group citations by PDF
+        citation_dict = {}
 
         for source in sources:
 
-            if source not in unique_sources:
+            pdf = source["pdf"]
 
-             unique_sources.append(
-               source
-             )
+            page = source["page"]
+
+            if pdf not in citation_dict:
+
+                citation_dict[pdf] = set()
+
+            citation_dict[pdf].add(page)
+
+        # Create clean source strings
+        formatted_sources = []
+
+        for pdf, pages in citation_dict.items():
+
+            pages = sorted(
+                list(pages)
+            )
+
+            page_string = ",".join(
+
+                str(page)
+
+                for page in pages
+
+            )
+
+            formatted_sources.append(
+
+                f"{pdf} (pages {page_string})"
+
+            )
 
         return {
 
             "answer": answer,
 
-            "sources": unique_sources
+            "sources": formatted_sources
 
         }
 

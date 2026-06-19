@@ -1,4 +1,5 @@
 from embeddings import get_embeddings
+from memory import conversation_history
 from vector_store import retrieve_chunks
 
 from google import genai
@@ -34,6 +35,9 @@ def ask_question(question):
     context = "\n".join(
         retrieved_chunks
     )
+    history = "\n".join(
+    conversation_history
+    )
 
     # Create prompt
     prompt = f"""
@@ -46,6 +50,10 @@ If the answer is not available in the context, say:
 "I couldn't find the answer in the uploaded PDF."
 
 Provide concise answers.
+
+Conversation History:
+
+{history}
 
 Context:
 
@@ -64,6 +72,18 @@ Question:
         )
 
         answer = response.text
+        conversation_history.append(
+
+            "User: " + question
+
+        )
+
+
+        conversation_history.append(
+
+            "Assistant: " + answer
+
+        )
 
         # Group citations by PDF
         citation_dict = {}

@@ -93,6 +93,11 @@ Question:
             "Assistant: " + answer
 
         )
+        if len(conversation_history) > 10:
+
+            conversation_history.pop(0)
+
+            conversation_history.pop(0)
 
         # Group citations by PDF
         citation_dict = {}

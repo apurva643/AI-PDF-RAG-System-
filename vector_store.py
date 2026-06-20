@@ -42,15 +42,15 @@ def store_chunks(
 
         metadatas=[
 
-        {
+            {
 
-            "source": source,
+                "source": source,
 
-            "page": chunk["page"]
+                "page": chunk["page"]
 
-        }
+            }
 
-        for chunk in chunks
+            for chunk in chunks
 
         ]
 
@@ -69,7 +69,8 @@ def retrieve_chunks(question_embedding):
 
         include=[
             "documents",
-            "metadatas"
+            "metadatas",
+            "distances"
         ]
 
     )
@@ -78,26 +79,49 @@ def retrieve_chunks(question_embedding):
 
         return [], []
 
-    documents = results["documents"][0]
+    documents = []
 
-    sources = [
+    sources = []
 
-    {
+    for document, metadata, distance in zip(
 
-        "pdf":
+        results["documents"][0],
 
-        metadata["source"],
+        results["metadatas"][0],
 
-        "page":
+        results["distances"][0]
 
-        metadata["page"]
+    ):
 
-    }
+        # For debugging Day 25
+        print(
+            metadata["source"],
+            metadata["page"],
+            distance
+        )
 
-    for metadata in
+        if distance < 0.7:
 
-    results["metadatas"][0]
+            documents.append(
 
-]
+                document
+
+            )
+
+            sources.append(
+
+                {
+
+                    "pdf":
+
+                    metadata["source"],
+
+                    "page":
+
+                    metadata["page"]
+
+                }
+
+            )
 
     return documents, sources

@@ -1,5 +1,8 @@
 from embeddings import get_embeddings
-from memory import conversation_history
+from memory import (
+    conversation_history,
+    current_topic
+)
 from vector_store import retrieve_chunks
 
 from google import genai
@@ -38,6 +41,7 @@ def ask_question(question):
     history = "\n".join(
     conversation_history
     )
+    topic = current_topic["topic"]
 
     # Create prompt
     prompt = f"""
@@ -50,6 +54,10 @@ If the answer is not available in the context, say:
 "I couldn't find the answer in the uploaded PDF."
 
 Provide concise answers.
+
+Current Topic:
+
+{topic}
 
 Conversation History:
 
@@ -70,15 +78,16 @@ Question:
             model="gemini-2.5-flash",
             contents=prompt
         )
-
         answer = response.text
+
+        if len(question) > 5:
+
+            current_topic["topic"] = question
         conversation_history.append(
 
             "User: " + question
 
         )
-
-
         conversation_history.append(
 
             "Assistant: " + answer

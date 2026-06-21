@@ -15,16 +15,38 @@ client = genai.Client(
 
 
 def ask_question(question):
+    print(
 
+        "Search Query:",
+
+        current_topic["topic"]
+
+        + " "
+
+        + question
+
+    )
     # Convert question to vector
+    search_query = (
+
+        current_topic["topic"]
+
+        + " "
+
+        + question
+
+    )
+
     question_embedding = get_embeddings(
-        [question]
+
+        [search_query]
+
     )[0]
 
     # Retrieve top chunks and sources
-    retrieved_chunks, sources = retrieve_chunks(
+    retrieved_chunks, sources, distances = retrieve_chunks(
         question_embedding
-    )
+   )
 
     # Handle no retrieved chunks
     if len(retrieved_chunks) == 0:
@@ -45,32 +67,48 @@ def ask_question(question):
 
     # Create prompt
     prompt = f"""
-You are a helpful assistant.
+    You are a helpful assistant.
 
-Answer ONLY using the provided context.
+    Answer ONLY using the provided context.
 
-If the answer is not available in the context, say:
+    If the answer is not available in the context, say:
 
-"I couldn't find the answer in the uploaded PDF."
+    "I couldn't find the answer in the uploaded PDF."
 
-Provide concise answers.
+    Use conversation history and the current topic to understand follow-up questions.
 
-Current Topic:
+    If the user asks for an example, provide a practical example whenever possible.
 
-{topic}
+    If the user asks follow-up questions such as:
 
-Conversation History:
+    "Explain it simply"
 
-{history}
+    "Give one example"
 
-Context:
+    "Where is it used"
 
-{context}
+    "What are its advantages"
 
-Question:
+    infer the topic from the conversation history and current topic.
 
-{question}
-"""
+    Keep answers concise but complete.
+
+    Current Topic:
+
+    {topic}
+
+    Conversation History:
+
+    {history}
+
+    Context:
+
+    {context}
+
+    Question:
+
+    {question}
+    """
 
     try:
 
@@ -79,6 +117,21 @@ Question:
             contents=prompt
         )
         answer = response.text
+        best_distance = min(
+            distances
+        )   
+
+        if best_distance < 0.4:
+
+            confidence = "High"
+
+        elif best_distance < 0.7:
+
+            confidence = "Medium"
+
+        else:
+
+            confidence = "Low"
 
         if len(question) > 5:
 
@@ -141,10 +194,11 @@ Question:
 
             "answer": answer,
 
+            "confidence": confidence,
+
             "sources": formatted_sources
 
-        }
-
+    }
     except Exception as e:
 
         print(e)

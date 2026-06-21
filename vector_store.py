@@ -124,4 +124,4 @@ def retrieve_chunks(question_embedding):
 
             )
 
-    return documents, sources
+    return documents, sources, results["distances"][0]

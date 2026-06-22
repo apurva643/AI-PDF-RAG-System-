@@ -46,7 +46,61 @@ def ask_question(question):
     # Retrieve top chunks and sources
     retrieved_chunks, sources, distances = retrieve_chunks(
         question_embedding
-   )
+    )
+    unique_chunks = []
+
+    for chunk in retrieved_chunks:
+
+        is_duplicate = False
+
+        chunk_words = set(
+
+            chunk.lower().split()
+
+        )
+
+        for existing_chunk in unique_chunks:
+
+            existing_words = set(
+
+              existing_chunk.lower().split()
+
+            )
+
+            common_words = len(
+
+                chunk_words.intersection(
+
+                    existing_words
+
+                )
+
+            )
+
+            if common_words > 80:
+
+                is_duplicate = True
+
+                break
+
+        if not is_duplicate:
+
+            unique_chunks.append(
+
+                chunk
+
+            )
+
+    retrieved_chunks = unique_chunks
+    MAX_CONTEXT_CHUNKS = 3
+
+    retrieved_chunks = retrieved_chunks[
+    :MAX_CONTEXT_CHUNKS
+    ]
+
+    sources = sources[
+    :MAX_CONTEXT_CHUNKS
+    ]
 
     # Handle no retrieved chunks
     if len(retrieved_chunks) == 0:
@@ -196,9 +250,11 @@ def ask_question(question):
 
             "confidence": confidence,
 
-            "sources": formatted_sources
+            "sources": formatted_sources,
 
-    }
+            "retrieved_chunks": retrieved_chunks
+
+        }
     except Exception as e:
 
         print(e)

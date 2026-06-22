@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File
 from pydantic import BaseModel
 
+from keyword_search import build_keyword_index
 from pdf_parser import extract_text_from_pdf
 from chunking import chunk_text
 from embeddings import get_embeddings
@@ -57,6 +58,9 @@ async def upload_pdf(
     file.filename
     )
 
+    build_keyword_index(
+        chunks
+    )
     return {
         "message":
         "PDF uploaded successfully"

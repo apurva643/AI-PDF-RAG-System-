@@ -4,6 +4,9 @@ from memory import (
     current_topic
 )
 from vector_store import retrieve_chunks
+from keyword_search import (
+    keyword_search
+)
 
 from google import genai
 from config import GEMINI_API_KEY
@@ -47,10 +50,26 @@ def ask_question(question):
     retrieved_chunks, sources, distances = retrieve_chunks(
         question_embedding
     )
+    keyword_chunks = keyword_search(
+        question
+    )
+    print(
+        "Keyword chunks:"
+    )
+
+    for chunk in keyword_chunks:
+
+        print(
+            chunk[:150]
+        )
+
+
+    retrieved_chunks.extend(
+        keyword_chunks
+    )
     unique_chunks = []
 
     for chunk in retrieved_chunks:
-
         is_duplicate = False
 
         chunk_words = set(

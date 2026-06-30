@@ -1,16 +1,17 @@
+
+from utils import get_relevant_sentences
 from embeddings import get_embeddings
 from memory import (
     conversation_history,
     current_topic
 )
 from vector_store import retrieve_chunks
+from google import genai
+from config import GEMINI_API_KEY
 from keyword_search import (
     keyword_search
 )
-
-from google import genai
-from config import GEMINI_API_KEY
-
+import time
 
 client = genai.Client(
     api_key=GEMINI_API_KEY
@@ -30,28 +31,81 @@ def ask_question(question):
 
     )
     # Convert question to vector
-    search_query = (
 
-        current_topic["topic"]
+    follow_up_words = [
 
-        + " "
+        "example",
 
-        + question
+        "advantages",
 
-    )
+        "disadvantages",
 
+        "uses",
+
+        "applications",
+
+        "where",
+
+        "why",
+
+        "how",
+
+        "difference",
+
+        "types",
+
+        "benefits",
+
+        "drawbacks",
+
+        "explain it",
+
+        "tell me more",
+
+        "its"
+
+    ]
+
+    question_lower = question.lower()
+
+    is_followup = any(
+
+        word in question_lower
+
+        for word in follow_up_words
+
+        )
+
+    if is_followup:
+
+        search_query = (
+
+            current_topic["topic"]
+
+            + " "
+
+            + question
+
+        )
+
+    else:
+
+        search_query = question
     question_embedding = get_embeddings(
 
         [search_query]
 
     )[0]
+    print("Search Query:", search_query)
+    print("Current Topic:", current_topic["topic"])
+    print("Is Followup:", is_followup)
 
     # Retrieve top chunks and sources
     retrieved_chunks, sources, distances = retrieve_chunks(
         question_embedding
     )
     keyword_chunks = keyword_search(
-        question
+    search_query
     )
     print(
         "Keyword chunks:"
@@ -166,6 +220,17 @@ def ask_question(question):
 
     Keep answers concise but complete.
 
+    Format your answer using bullet points whenever appropriate.
+
+    If the answer contains steps,
+    number them.
+
+    If the answer is a definition,
+    give the definition first,
+    then explain it in 2–4 bullet points.
+
+    Do not mention the retrieved context or sources in your answer.
+
     Current Topic:
 
     {topic}
@@ -183,99 +248,141 @@ def ask_question(question):
     {question}
     """
 
-    try:
+    response = None
 
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
-        )
-        answer = response.text
-        best_distance = min(
-            distances
-        )   
+    for attempt in range(3):
 
-        if best_distance < 0.4:
+        try:
 
-            confidence = "High"
+            response = client.models.generate_content(
 
-        elif best_distance < 0.7:
+                model="gemini-2.5-flash",
 
-            confidence = "Medium"
-
-        else:
-
-            confidence = "Low"
-
-        if len(question) > 5:
-
-            current_topic["topic"] = question
-        conversation_history.append(
-
-            "User: " + question
-
-        )
-        conversation_history.append(
-
-            "Assistant: " + answer
-
-        )
-        if len(conversation_history) > 10:
-
-            conversation_history.pop(0)
-
-            conversation_history.pop(0)
-
-        # Group citations by PDF
-        citation_dict = {}
-
-        for source in sources:
-
-            pdf = source["pdf"]
-
-            page = source["page"]
-
-            if pdf not in citation_dict:
-
-                citation_dict[pdf] = set()
-
-            citation_dict[pdf].add(page)
-
-        # Create clean source strings
-        formatted_sources = []
-
-        for pdf, pages in citation_dict.items():
-
-            pages = sorted(
-                list(pages)
-            )
-
-            page_string = ",".join(
-
-                str(page)
-
-                for page in pages
+                contents=prompt
 
             )
 
-            formatted_sources.append(
+            break
 
-                f"{pdf} (pages {page_string})"
+        except Exception as e:
+
+            print(
+
+                f"Attempt {attempt + 1} failed:",
+
+                e
 
             )
+
+            time.sleep(5)
+
+    if response is None:
 
         return {
 
-            "answer": answer,
+            "answer":
 
-            "confidence": confidence,
+            "The AI service is temporarily busy. Please try again in a few seconds.",
 
-            "sources": formatted_sources,
+            "confidence":
 
-            "retrieved_chunks": retrieved_chunks
+            "Unavailable",
+
+            "sources": []
 
         }
-    except Exception as e:
 
-        print(e)
+    answer = response.text
+    best_distance = min(
+        distances
+    )   
 
-        return str(e)
+    if best_distance < 0.4:
+
+        confidence = "High"
+
+    elif best_distance < 0.7:
+
+        confidence = "Medium"
+
+    else:
+
+        confidence = "Low"
+
+    if not is_followup:
+
+        current_topic["topic"] = question
+    conversation_history.append(
+
+        "User: " + question
+
+    )
+    conversation_history.append(
+
+        "Assistant: " + answer
+
+    )
+    if len(conversation_history) > 10:
+
+        conversation_history.pop(0)
+
+        conversation_history.pop(0)
+
+        # Group citations by PDF
+    citation_dict = {}
+
+    for source in sources:
+
+        pdf = source["pdf"]
+
+        page = source["page"]
+
+        if pdf not in citation_dict:
+
+            citation_dict[pdf] = set()
+
+        citation_dict[pdf].add(page)
+
+        # Create clean source strings
+    formatted_sources = []
+
+    for pdf, pages in citation_dict.items():
+
+        pages = sorted(
+            list(pages)
+        )
+
+        page_string = ",".join(
+
+            str(page)
+
+            for page in pages
+
+        )
+
+        formatted_sources.append(
+
+            f"{pdf} (pages {page_string})"
+
+        )
+    relevant_sentences = get_relevant_sentences(
+
+        question,
+
+        retrieved_chunks
+
+    )
+
+    return {
+
+        "answer": answer,
+
+        "confidence": confidence,
+
+        "sources": formatted_sources,
+
+        "supporting_sentences": relevant_sentences
+
+    }
+
+    

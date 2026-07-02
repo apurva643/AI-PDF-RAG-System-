@@ -93,4 +93,25 @@ def pdfs():
         get_uploaded_pdfs()
 
     }
-    
+@app.get("/health")
+def health():
+
+    return {
+
+        "status": "healthy",
+
+        "service": "RAG Chatbot",
+
+        "version": "1.0"
+
+    }
+@app.get("/")
+def home():
+
+    return {
+
+        "message": "Welcome to the RAG Chatbot API",
+
+        "docs": "/docs"
+
+    }

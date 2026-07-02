@@ -96,9 +96,6 @@ def ask_question(question):
         [search_query]
 
     )[0]
-    print("Search Query:", search_query)
-    print("Current Topic:", current_topic["topic"])
-    print("Is Followup:", is_followup)
 
     # Retrieve top chunks and sources
     retrieved_chunks, sources, distances = retrieve_chunks(
@@ -107,16 +104,6 @@ def ask_question(question):
     keyword_chunks = keyword_search(
     search_query
     )
-    print(
-        "Keyword chunks:"
-    )
-
-    for chunk in keyword_chunks:
-
-        print(
-            chunk[:150]
-        )
-
 
     retrieved_chunks.extend(
         keyword_chunks
@@ -204,7 +191,19 @@ def ask_question(question):
 
     Use conversation history and the current topic to understand follow-up questions.
 
-    If the user asks for an example, provide a practical example whenever possible.
+    If the user asks for an example:
+
+    - First check whether the concept is explained in the provided context.
+
+    - If the context explains the concept but does not contain an example, generate one simple example based only on the information available in the context.
+
+    - Clearly keep the example simple and educational.
+
+    - If the concept itself is not mentioned anywhere in the context, reply:
+
+    "I couldn't find the answer in the uploaded PDF."
+
+    Do not invent explanations for concepts that are completely absent from the context.
 
     If the user asks follow-up questions such as:
 
@@ -367,9 +366,9 @@ def ask_question(question):
         )
     relevant_sentences = get_relevant_sentences(
 
-        question,
+    search_query,
 
-        retrieved_chunks
+    retrieved_chunks
 
     )
 

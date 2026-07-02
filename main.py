@@ -1,6 +1,6 @@
 from fastapi import FastAPI, UploadFile, File
 from pydantic import BaseModel
-
+from pdf_manager import add_pdf
 from keyword_search import build_keyword_index
 from pdf_parser import extract_text_from_pdf
 from chunking import chunk_text
@@ -57,6 +57,9 @@ async def upload_pdf(
     embeddings,
     file.filename
     )
+    add_pdf(
+    file.filename
+    )
 
     build_keyword_index(
         chunks
@@ -77,4 +80,17 @@ def ask(
     )
 
     return response
+from pdf_manager import get_uploaded_pdfs
+
+
+@app.get("/pdfs")
+def pdfs():
+
+    return {
+
+        "uploaded_pdfs":
+
+        get_uploaded_pdfs()
+
+    }
     

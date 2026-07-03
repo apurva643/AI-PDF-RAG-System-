@@ -6,6 +6,7 @@ from memory import (
     current_topic
 )
 from vector_store import retrieve_chunks
+from logger import log_question
 from google import genai
 from config import GEMINI_API_KEY
 from keyword_search import (
@@ -19,6 +20,7 @@ client = genai.Client(
 
 
 def ask_question(question):
+    start_time = time.time()
     print(
 
         "Search Query:",
@@ -292,6 +294,13 @@ def ask_question(question):
         }
 
     answer = response.text
+    log_question(
+
+    question,
+
+    answer
+
+    )
     best_distance = min(
         distances
     )   
@@ -371,16 +380,27 @@ def ask_question(question):
     retrieved_chunks
 
     )
+    response_time = round(
+
+    time.time() - start_time,
+
+    2
+
+    )
 
     return {
 
-        "answer": answer,
+    "answer": answer,
 
-        "confidence": confidence,
+    "confidence": confidence,
 
-        "sources": formatted_sources,
+    "sources": formatted_sources,
 
-        "supporting_sentences": relevant_sentences
+    "supporting_sentences": relevant_sentences,
+
+    "response_time":
+
+    f"{response_time} seconds"
 
     }
 

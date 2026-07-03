@@ -1,0 +1,52 @@
+2026-07-03 12:46:25.028434
+Question:
+What is TF-IDF
+
+Answer:
+TF-IDF (Term Frequency-Inverse Document Frequency) is a technique used to convert textual data into numerical form.
+
+*   It assigns each word a numerical weight that reflects its importance in distinguishing between fake and real news.
+*   It highlights important words that contribute to the meaning of the text while reducing the impact of frequently used common words.
+*   It combines two measures:
+    *   **Term Frequency (TF):** Measures how frequently a word appears in a document.
+    *   **Inverse Document Frequency (IDF):** Reduces the weight of commonly occurring words (like "the," "is," and "and") and increases the importance of less frequent but more meaningful words.
+------------------------------------------------------------
+
+2026-07-03 12:47:06.153114
+Question:
+give one example
+
+Answer:
+Imagine you have two simple text snippets:
+
+*   **Snippet 1:** "The **cat** sat on the mat."
+*   **Snippet 2:** "The **dog** barked loudly."
+
+Here's how TF-IDF conceptually assigns importance:
+
+*   **Term Frequency (TF):**
+    *   The word "the" appears once in Snippet 1 and once in Snippet 2.
+    *   The word "**cat**" appears only once in Snippet 1.
+    *   The word "**dog**" appears only once in Snippet 2.
+
+*   **Inverse Document Frequency (IDF):**
+    *   The word "the" is very common (appears in both snippets), so its IDF (and thus its overall TF-IDF weight) would be low.
+    *   The word "**cat**" is less common (only in Snippet 1), so its IDF would be higher.
+    *   The word "**dog**" is also less common (only in Snippet 2), so its IDF would be higher.
+
+*   **TF-IDF Weight:** When TF and IDF are combined, words like "**cat**" in Snippet 1 and "**dog**" in Snippet 2 would receive a higher numerical weight than "the". This highlights "cat" as important for Snippet 1 and "dog" for Snippet 2, effectively distinguishing their topics.
+------------------------------------------------------------
+
+2026-07-03 12:55:37.347532
+Question:
+what is tf-idf
+
+Answer:
+TF-IDF (Term Frequency-Inverse Document Frequency) is a technique used to convert textual data into numerical form.
+
+*   It highlights important words that contribute to the meaning of the text.
+*   It reduces the impact of frequently used common words.
+*   It assigns each word a numerical weight that reflects its importance in distinguishing between fake and real news.
+*   In this project, the TF-IDF vectorizer was applied to the dataset to convert text into feature vectors, which are then used as input for the machine learning model.
+------------------------------------------------------------
+

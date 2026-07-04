@@ -21,6 +21,64 @@ client = genai.Client(
 
 def ask_question(question):
     start_time = time.time()
+    question = question.strip()
+    if len(question) == 0:
+
+        return {
+
+            "answer":
+
+            "Please enter a question.",
+
+            "confidence":
+
+            "Unavailable",
+
+            "sources": [],
+
+            "supporting_sentences": [],
+
+            "response_time": "0.00 seconds"
+
+        }
+    if len(question) < 3:
+
+        return {
+
+            "answer":
+
+            "Please enter a more meaningful question.",
+
+            "confidence":
+
+            "Unavailable",
+
+            "sources": [],
+
+            "supporting_sentences": [],
+
+            "response_time": "0.00 seconds"
+
+        }
+    if len(question) > 500:
+
+        return {
+
+            "answer":
+
+            "Question is too long.",
+
+            "confidence":
+
+            "Unavailable",
+
+            "sources": [],
+
+            "supporting_sentences": [],
+
+            "response_time": "0.00 seconds"
+
+        }
     print(
 
         "Search Query:",
@@ -167,10 +225,33 @@ def ask_question(question):
     # Handle no retrieved chunks
     if len(retrieved_chunks) == 0:
 
-        return (
-            "I couldn't find the answer "
-            "in the uploaded PDF."
+        response_time = round(
+
+            time.time() - start_time,
+
+            2
+
         )
+
+        return {
+
+            "answer":
+
+            "I couldn't find the answer in the uploaded PDF.",
+
+            "confidence":
+
+            "Low",
+
+            "sources": [],
+
+            "supporting_sentences": [],
+
+            "response_time":
+
+            f"{response_time} seconds"
+
+        }
 
     # Convert chunks into context
     context = "\n".join(
@@ -279,19 +360,33 @@ def ask_question(question):
 
     if response is None:
 
+        response_time = round(
+
+            time.time() - start_time,
+
+            2
+
+        )
+
         return {
 
-            "answer":
+        "answer":
 
-            "The AI service is temporarily busy. Please try again in a few seconds.",
+        "The AI service is temporarily unavailable. Please try again later.",
 
-            "confidence":
+        "confidence":
 
-            "Unavailable",
+        "Unavailable",
 
-            "sources": []
+        "sources": [],
 
-        }
+        "supporting_sentences": [],
+
+        "response_time":
+
+        f"{response_time} seconds"
+
+    }
 
     answer = response.text
     log_question(

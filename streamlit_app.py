@@ -1,6 +1,10 @@
 import streamlit as st
 import requests
 
+if "messages" not in st.session_state:
+
+    st.session_state.messages = []
+
 st.set_page_config(
     page_title="RAG PDF Chatbot",
     page_icon="📄",
@@ -17,10 +21,33 @@ st.caption(
 # Upload PDF
 # -----------------------------
 
-uploaded_file = st.file_uploader(
-    "Upload a PDF",
-    type=["pdf"]
-)
+with st.sidebar:
+
+    st.header("📂 PDF Manager")
+
+    uploaded_file = st.file_uploader(
+
+        "Upload PDF",
+
+        type=["pdf"]
+
+    )
+    if len(st.session_state.messages) == 0:
+
+        with st.chat_message("assistant"):
+
+            st.write(
+
+                "👋 Welcome! Upload a PDF and ask me anything about it."
+
+            )
+    st.divider()
+
+    if st.button("🗑 Clear Chat"):
+
+        st.session_state.messages = []
+
+        st.rerun()
 
 if uploaded_file is not None:
 
@@ -48,6 +75,21 @@ if uploaded_file is not None:
         else:
 
             st.error("Failed to upload PDF.")
+        st.divider()
+
+        pdf_response = requests.get(
+
+            "http://127.0.0.1:8000/pdfs"
+
+        )
+
+        if pdf_response.status_code == 200:
+
+            st.subheader("Uploaded PDFs")
+
+            for pdf in pdf_response.json()["uploaded_pdfs"]:
+
+                st.write("📄", pdf)
 
 # -----------------------------
 # Ask Question
@@ -55,75 +97,121 @@ if uploaded_file is not None:
 
 st.divider()
 
-st.subheader("Ask a Question")
+question = st.chat_input(
 
-question = st.text_input(
-    "Enter your question"
+    "Ask a question about the uploaded PDF"
+
 )
 
-if st.button("Ask"):
+if question:
 
-    if question.strip() == "":
+    st.session_state.messages.append(
 
-        st.warning(
-            "Please enter a question."
-        )
+        {
 
-    else:
+            "role": "user",
 
-        with st.spinner(
-            "Generating answer..."
+            "content": question
+        }
+    )
+    with st.spinner(
+        "Generating answer..."
         ):
 
-            response = requests.post(
-                "http://127.0.0.1:8000/ask",
-                json={
-                    "question": question
+        response = requests.post(
+            "http://127.0.0.1:8000/ask",
+            json={
+                "question": question
                 }
-            )
+        )
 
         if response.status_code == 200:
 
             result = response.json()
 
-            st.subheader("Answer")
+            st.session_state.messages.append(
 
-            st.write(
-                result["answer"]
+                {
+
+                    "role": "assistant",
+
+                    "content": result["answer"],
+
+                    "confidence": result["confidence"],
+
+                    "response_time": result["response_time"],
+
+                    "sources": result["sources"],
+
+                    "supporting_sentences": result["supporting_sentences"]
+
+                }
+
             )
-
-            st.success(
-                f"Confidence: {result['confidence']}"
-            )
-
-            st.info(
-                f"Response Time: {result['response_time']}"
-            )
-
-            st.subheader("Sources")
-
-            for source in result["sources"]:
-
-                st.write(
-                    "📄",
-                    source
-                )
-
-            if result["supporting_sentences"]:
-
-                with st.expander(
-                    "Supporting Evidence"
-                ):
-
-                    for sentence in result["supporting_sentences"]:
-
-                        st.write(
-                            "•",
-                            sentence
-                        )
 
         else:
 
             st.error(
-                "Failed to get response from API."
-            )
+
+            "Failed to get response from API."
+
+        )
+st.divider()
+
+for message in st.session_state.messages:
+
+    avatar = "👤"
+
+    if message["role"] == "assistant":
+
+        avatar = "🤖"
+
+    with st.chat_message(
+
+        message["role"],
+
+        avatar=avatar
+
+    ):
+
+        st.write(message["content"])
+
+        if message["role"] == "assistant":
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+
+                st.success(
+
+                    f"Confidence: {message['confidence']}"
+
+                )
+
+            with col2:
+
+                st.info(
+
+                    f"⏱ {message['response_time']}"
+
+                )
+
+            if message["sources"]:
+
+                st.subheader("Sources")
+
+                for source in message["sources"]:
+
+                    st.write("📄", source)
+
+            if message["supporting_sentences"]:
+
+                with st.expander(
+
+                    "Supporting Evidence"
+
+                ):
+
+                    for sentence in message["supporting_sentences"]:
+
+                        st.write("•", sentence)

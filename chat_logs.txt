@@ -191,3 +191,135 @@ Let's consider two short news headlines:
     *   Similarly, "fake" in Headline 2 would receive a higher TF-IDF weight than "a" because "fake" is a distinctive and important word for that headline, helping to identify its content.
 ------------------------------------------------------------
 
+2026-07-07 20:13:18.727927
+Question:
+What is TF-IDF?
+
+Answer:
+TF-IDF (Term Frequency-Inverse Document Frequency) is a technique used to convert textual data into a numerical form.
+
+*   It assigns each word a numerical weight that reflects its importance in distinguishing between fake and real news.
+*   It combines two measures:
+    *   **Term Frequency (TF):** Measures how frequently a word appears in a document.
+    *   **Inverse Document Frequency (IDF):** Reduces the weight of commonly occurring words (like "the," "is," and "and") and increases the importance of less frequent but more meaningful words.
+*   This process highlights important words that contribute to the meaning of the text while reducing the impact of frequently used common words.
+------------------------------------------------------------
+
+2026-07-07 20:22:17.354448
+Question:
+What is TF-IDF
+
+Answer:
+TF-IDF (Term Frequency-Inverse Document Frequency) is a technique used to convert textual data into a numerical form.
+
+*   It assigns each word a numerical weight that reflects its importance in distinguishing between fake and real news.
+*   It combines two measures:
+    *   **Term Frequency (TF):** Measures how frequently a word appears in a document.
+    *   **Inverse Document Frequency (IDF):** Reduces the weight of commonly occurring words (like "the," "is," and "and") and increases the importance of less frequent but more meaningful words.
+*   This process highlights important words that contribute to the meaning of the text while reducing the impact of frequently used common words.
+*   In this project, the TF-IDF vectorizer was applied to convert text into feature vectors, which are then used as input for a machine learning model.
+------------------------------------------------------------
+
+2026-07-07 20:22:30.070060
+Question:
+What is TF-IDF?
+
+Answer:
+TF-IDF (Term Frequency-Inverse Document Frequency) is a technique used to convert textual data into a numerical form.
+
+*   It assigns each word a numerical weight that reflects its importance in distinguishing between fake and real news.
+*   It combines two measures:
+    *   **Term Frequency (TF):** Measures how frequently a word appears in a document.
+    *   **Inverse Document Frequency (IDF):** Reduces the weight of commonly occurring words (like "the," "is," and "and") and increases the importance of less frequent but more meaningful words.
+*   This process highlights important words that contribute to the meaning of the text while reducing the impact of frequently used common words.
+*   In this project, the TF-IDF vectorizer was applied to convert text into feature vectors, which are then used as input for a machine learning model.
+------------------------------------------------------------
+
+2026-07-07 20:22:49.840789
+Question:
+explain TF_IDF>
+
+Answer:
+TF-IDF (Term Frequency-Inverse Document Frequency) is a technique used to convert textual data into a numerical form.
+
+*   It assigns each word a numerical weight that reflects its importance in distinguishing between fake and real news.
+*   It combines two measures:
+    *   **Term Frequency (TF):** Measures how frequently a word appears in a document.
+    *   **Inverse Document Frequency (IDF):** Reduces the weight of commonly occurring words (like "the," "is," and "and") and increases the importance of less frequent but more meaningful words.
+*   This process highlights important words that contribute to the meaning of the text while reducing the impact of frequently used common words.
+*   In this project, the TF-IDF vectorizer was applied to convert text into feature vectors, which are then used as input for a machine learning model.
+------------------------------------------------------------
+
+2026-07-07 20:30:13.197525
+Question:
+What is TF-IDF?
+
+Answer:
+TF-IDF (Term Frequency-Inverse Document Frequency) is a technique used to convert textual data into a numerical form.
+
+*   It assigns each word a numerical weight that reflects its importance in distinguishing between fake and real news.
+*   It combines two measures:
+    *   **Term Frequency (TF):** Measures how frequently a word appears in a document.
+    *   **Inverse Document Frequency (IDF):** Reduces the weight of commonly occurring words (like "the," "is," and "and") and increases the importance of less frequent but more meaningful words.
+*   This process highlights important words that contribute to the meaning of the text while reducing the impact of frequently used common words.
+*   In this project, the TF-IDF vectorizer was applied to convert text into feature vectors, which are then used as input for a machine learning model.
+------------------------------------------------------------
+
+2026-07-07 20:30:37.402132
+Question:
+Give one example
+
+Answer:
+Here is a simple example:
+
+Imagine you have two short news articles:
+
+1.  **Article A:** "The fake news caused a real problem."
+2.  **Article B:** "This is a real news report."
+
+*   **Term Frequency (TF):**
+    *   The word "fake" appears once in Article A and zero times in Article B.
+    *   The word "real" appears once in Article A and once in Article B.
+    *   The word "news" appears once in Article A and once in Article B.
+
+*   **Inverse Document Frequency (IDF):**
+    *   Words like "the" and "is" would have a very low IDF because they are common in almost all English texts.
+    *   "News" would have a relatively low IDF because it appears in both articles, making it less unique for distinguishing them.
+    *   "Fake" would have a higher IDF because it only appears in Article A, making it more distinctive.
+
+*   **TF-IDF Weight:**
+    *   "Fake" in Article A would have a higher TF-IDF weight because it appears in that article (TF) and is less common across all articles (IDF). This highlights "fake" as an important word for distinguishing Article A, potentially as "fake news."
+    *   "Real" would have a moderate TF-IDF weight because while it appears, it's present in both articles, reducing its power to distinguish them uniquely.
+    *   "The" or "is" would have very low TF-IDF weights because even if they appear, their commonness (low IDF) means they don't help much in differentiating between the articles.
+------------------------------------------------------------
+
+2026-07-07 20:41:08.245727
+Question:
+What is TF-IDF
+
+Answer:
+TF-IDF (Term Frequency-Inverse Document Frequency) is a technique used to convert textual data into a numerical form.
+
+*   It assigns each word a numerical weight that reflects its importance in distinguishing between fake and real news.
+*   It combines two measures:
+    *   **Term Frequency (TF):** Measures how frequently a word appears in a document.
+    *   **Inverse Document Frequency (IDF):** Reduces the weight of commonly occurring words (like "the," "is," and "and") and increases the importance of less frequent but more meaningful words.
+*   This process highlights important words that contribute to the meaning of the text while reducing the impact of frequently used common words.
+*   In this project, the TF-IDF vectorizer was applied to convert text into feature vectors, which are then used as input for a machine learning model.
+------------------------------------------------------------
+
+2026-07-07 20:46:35.703243
+Question:
+What is TF-IDF
+
+Answer:
+TF-IDF (Term Frequency-Inverse Document Frequency) is a technique used to convert textual data into a numerical form.
+
+*   It assigns each word a numerical weight that reflects its importance in distinguishing between fake and real news.
+*   It combines two measures:
+    *   **Term Frequency (TF):** Measures how frequently a word appears in a document.
+    *   **Inverse Document Frequency (IDF):** Reduces the weight of commonly occurring words (like "the," "is," and "and") and increases the importance of less frequent but more meaningful words.
+*   This process highlights important words that contribute to the meaning of the text while reducing the impact of frequently used common words.
+*   In this project, the TF-IDF vectorizer was applied to convert text into feature vectors, which are then used as input for a machine learning model.
+------------------------------------------------------------
+
